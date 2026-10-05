@@ -1,0 +1,128 @@
+{
+  "name": "check-availability",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "check-availability",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f362e992-c0b0-46e7-b26a-9242c094dda8",
+      "name": "Webhook",
+      "webhookId": "613a0952-b3ee-4ffe-ae83-25927bfa77e9"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "shivapriyakalavala013@gmail.com",
+          "mode": "list",
+          "cachedResultName": "shivapriyakalavala013@gmail.com"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $now.startOf('day') }}",
+        "timeMax": "={{ $now.plus(1, 'day').endOf('day') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "29c79bc9-600e-4e83-8a02-0460d13c423f",
+      "name": "Get many events",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "zp5Zu5zc9k563P9n",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $('Webhook').first().json.body;\nconst specialty = body.specialty;\nconst raw = body.date;\n\nconst IST = 5.5 * 3600000;\nconst now = new Date(Date.now() + IST);\nlet d = new Date(now);\nif (raw === 'tomorrow') d.setUTCDate(d.getUTCDate() + 1);\nelse if (raw !== 'today') d = new Date(raw + 'T00:00:00Z');\nconst date = d.toISOString().slice(0, 10);\n\nconst doctors = {\n  general_physician: { name: \"Dr. Ravi Kumar\", days: [1,2,3,4,5,6], start: 9.5, end: 13.5 },\n  gynecologist:      { name: \"Dr. Lakshmi\",    days: [2,4,6],       start: 17,  end: 20 },\n  pediatrician:      { name: \"Dr. Srinivas\",   days: [1,3,5],       start: 17.5, end: 20.5 },\n};\nconst doc = doctors[specialty];\nif (!doc) return [{ json: { error: \"unknown_specialty\" } }];\n\nconst dayOfWeek = new Date(date + 'T00:00:00').getDay();\nif (!doc.days.includes(dayOfWeek)) {\n  return [{ json: { date, doctor: doc.name, available_slots: [], note: \"doctor_not_available_this_day\" } }];\n}\n\nconst events = $input.all().map(i => i.json).filter(e => e.start && e.start.dateTime);\nconst pad = n => String(n).padStart(2, '0');\nconst slots = [];\nfor (let t = doc.start; t < doc.end; t += 0.5) {\n  const h = Math.floor(t), m = (t % 1) * 60;\n  const start = new Date(`${date}T${pad(h)}:${pad(m)}:00+05:30`);\n  const end = new Date(start.getTime() + 30 * 60000);\n  const busy = events.some(e => new Date(e.start.dateTime) < end && new Date(e.end.dateTime) > start);\n  if (!busy && start > new Date()) slots.push(`${pad(h)}:${pad(m)}`);\n}\nreturn [{ json: { date, doctor: doc.name, available_slots: slots.slice(0, 6) } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "be884a5f-791c-4268-8d99-2d81d92e5c1a",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        672,
+        0
+      ],
+      "id": "b78ac165-287e-4194-9333-4545c5cb2d4d",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get many events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "52fabd6c-4d6b-4fa0-8f68-c105af2bf78f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0cf58d9eb06765f22894644d0b145100566c2be2230b80b4f2ae5b2ed64e1410"
+  },
+  "nodeGroups": [],
+  "id": "n7M2nRj6M70kCfGN",
+  "tags": []
+}

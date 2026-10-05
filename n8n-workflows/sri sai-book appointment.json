@@ -1,0 +1,258 @@
+{
+  "name": "sri sai-book appointment",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "book-appointment",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "53a3bdb5-6e2c-48a0-8919-4da91b123a67",
+      "name": "Webhook",
+      "webhookId": "15726bdc-64c6-4a2c-a8b1-8ccc9a0d2530"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "shivapriyakalavala013@gmail.com",
+          "mode": "list",
+          "cachedResultName": "shivapriyakalavala013@gmail.com"
+        },
+        "start": "={{ $json.body.date + 'T' + $json.body.time + ':00+05:30' }}",
+        "end": "={{ DateTime.fromISO($json.body.date + 'T' + $json.body.time + ':00', {zone: 'Asia/Kolkata'}).plus({minutes: 30}).toISO() }}",
+        "additionalFields": {
+          "description": "={{ 'Caller: ' + $json.body.caller_name + ', Phone: ' + $json.body.phone }}",
+          "summary": "={{ $json.body.patient_name }} - {{ $json.body.specialty }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "29ae2e9f-4b25-4fe2-87fb-62b7b708c4c2",
+      "name": "Create an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "zp5Zu5zc9k563P9n",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        512,
+        144
+      ],
+      "id": "90702732-66c9-4ecd-8df5-ddc2e3656c86",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appyPYd17xRJOFf0g",
+          "mode": "list",
+          "cachedResultName": "srisai clinic",
+          "cachedResultUrl": "https://airtable.com/appyPYd17xRJOFf0g"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblNIMPKJIMMLqsnH",
+          "mode": "list",
+          "cachedResultName": "Appointments",
+          "cachedResultUrl": "https://airtable.com/appyPYd17xRJOFf0g/tblNIMPKJIMMLqsnH"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "patient_name": "={{ $('Webhook').item.json.body.patient_name }}",
+            "caller_name": "={{ $('Webhook').item.json.body.caller_name }}",
+            "phone": "={{ $('Webhook').item.json.body.phone }}",
+            "specialty": "={{ $('Webhook').item.json.body.specialty }}",
+            "date": "={{ $('Webhook').item.json.body.date }}",
+            "time": "={{ $('Webhook').item.json.body.time }}",
+            "calendar_event_id": "={{ $json.id }}",
+            "status": "=confirmed"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "patient_name",
+              "displayName": "patient_name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "caller_name",
+              "displayName": "caller_name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "specialty",
+              "displayName": "specialty",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "time",
+              "displayName": "time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "calendar_event_id",
+              "displayName": "calendar_event_id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        512,
+        -160
+      ],
+      "id": "9a621ec0-bece-4d10-aeca-ff473345031a",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "SZrQQ3PriF0Ab7dt",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Create an event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "031828e2-30d7-4655-8d5b-ec4b38c6b39a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0cf58d9eb06765f22894644d0b145100566c2be2230b80b4f2ae5b2ed64e1410"
+  },
+  "nodeGroups": [],
+  "id": "GTPDcWsBogpSmzMn",
+  "tags": []
+}

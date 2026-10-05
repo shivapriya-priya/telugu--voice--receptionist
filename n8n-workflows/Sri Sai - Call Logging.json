@@ -1,0 +1,676 @@
+{
+  "name": "Sri Sai - Call Logging",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "call-ended",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a74d343c-9df0-4d6d-831f-724f81291666",
+      "name": "Webhook",
+      "webhookId": "6bd3d234-84c4-45ff-ba09-dd34119fbdb6"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        624,
+        0
+      ],
+      "id": "33f471c3-b1a5-4318-bf2e-355859595600",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\n\nreturn [{\n  json: {\n    call_id: body.id || '',\n    caller_number: '',\n    timestamp: new Date().toISOString(),\n    duration_sec: body.conversation_duration || 0,\n    transcript: body.transcript || '',\n    outcome: body.transcript && body.transcript.includes('confirm') ? 'booked' : 'info-only',\n    recording_url: ''\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "8541ddbf-8df0-4693-b03d-d6597c4ae328",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appyPYd17xRJOFf0g",
+          "mode": "list",
+          "cachedResultName": "srisai clinic",
+          "cachedResultUrl": "https://airtable.com/appyPYd17xRJOFf0g"
+        },
+        "table": {
+          "__rl": true,
+          "value": "=tblkqTLCH1BdfArep",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "call_id": "={{ $json.call_id }}",
+            "caller_number": "={{ $json.caller_number }}",
+            "transcript": "={{ $json.transcript }}",
+            "outcome": "={{ $json.outcome }}",
+            "recording_url": "={{ $json.recording_url }}",
+            "timestamp": "={{ $json.timestamp }}",
+            "duration_sec": "={{ $json.duration_sec }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "call_id",
+              "displayName": "call_id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "caller_number",
+              "displayName": "caller_number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "duration_sec",
+              "displayName": "duration_sec",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "transcript",
+              "displayName": "transcript",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "outcome",
+              "displayName": "outcome",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recording_url",
+              "displayName": "recording_url",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "e9bbdf36-ff2a-467b-b00c-45f02bcc30d6",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "SZrQQ3PriF0Ab7dt",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "scenarios-biggest-playing-die.trycloudflare.com",
+            "user-agent": "Python/3.10 aiohttp/3.14.1",
+            "content-length": "13188",
+            "accept": "*/*",
+            "accept-encoding": "gzip",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "13.202.133.53",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "IN",
+            "cf-ray": "a42a557d9fe14738-BOM",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-warp-tag-id": "7449c40b-9f9f-4a47-8d04-1403866cc2d3",
+            "cf-worker": "trycloudflare.com",
+            "connection": "keep-alive",
+            "content-type": "application/json",
+            "x-forwarded-for": "13.202.133.53",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "id": "56d92c46-59c9-4ea1-9bfd-a82176b5614c",
+            "agent_id": "b194a700-b0d3-4a7a-afba-d9ec2fa285af",
+            "batch_id": null,
+            "scheduled_at": null,
+            "answered_by_voice_mail": null,
+            "conversation_duration": 107,
+            "total_cost": 12,
+            "transcript": "assistant: హలో! Sri Sai Clinic నుంచి Priya మాట్లాడుతున్నా, ఎలా హెల్ప్ చేయాలి?\nuser: ఎపాయింట్మెంట్ బుక్ చేయండి. ముఖ్యంగా ఉన్నాను.\nassistant:  Cheppandi, ఏ సమస్యతో ఉన్నారు? ఏం అనిపిస్తోంది?\nuser: ఫీవర్, కాఫ్. ఆఫ్ ఉంది.\nassistant:  అయ్యో, ఫీవర్, కాఫ్ అంటే general physician దగ్గర చూడాలి. అలాగే, ఎప్పటి నుంచి ఉంది?\nuser: త్రీ డేస్ నుంచి ఉంది.\nassistant: One moment while I fetch the details\nassistant:  ఈ రోజు Dr. Ravi Kumar దగ్గర slots లేవు. మీరు రేపు చూడాలనుకుంటున్నారా?\nuser: ఆ చూడండి.\nassistant: One moment while I fetch the details\nassistant:  రేపు Dr. Ravi Kumar దగ్గర general physician కోసం morning 9:30 నుండి 12:00 వరకు slots ఉన్నాయి. మీరు ఏ సమయం convenient అనిపిస్తుంది?\nuser: 9 తాకి.\nuser: తా టీకే చాన్.\nassistant:  సరే, మీ పేరు చెప్పండి, appointment confirm చేయడానికి. మీరు ఫీవర్, కాఫ్ కోసం general physician Dr. Ravi Kumar దగ్గర రేపు 9:30 కి appointment request chesthunnam. correct aa?\nuser: కరెక్ట్. రక్తం.\nassistant:  మీ పేరు చెప్పండి, appointment book చేయడానికి. మీరు రక్తం అనగా blood test కూడా కావాలా?\nuser: వద్దా అండి? పేరస్పాతి\nassistant:  సరే, appointment మీ పేరుతో రేపు 9:30 కి general physician Dr. Ravi Kumar దగ్గర confirm చేస్తా. పాత reports లేదా prescriptions ఉంటే తీసుకురండి. మీరు జాగ్రత్తగా ఉండండి. WhatsApp ద్వారా confirm message పంపిస్తాం. ఇంకేమైనా help కావాలా?\nuser: లేదండి. థాంక్యూ.\nassistant: సరే, ధన్యవాదాలు! మీరు జాగ్రత్తగా ఉండండి. Take care. బై.\n",
+            "usage_breakdown": {
+              "llmModel": {
+                "azure/gpt-4.1-mini": {
+                  "input": 49576,
+                  "output": 309
+                }
+              },
+              "voice_id": "cf061d8b-a752-4865-81a2-57570a6e0565",
+              "llmTokens": 0,
+              "provider_source": {
+                "llm": "bolna",
+                "synthesizer": "bolna",
+                "transcriber": "bolna"
+              },
+              "synthesizer_model": "sonic-3",
+              "transcriber_model": "saaras:v3",
+              "llm_usage_breakdown": {
+                "hangup": null,
+                "analytics": null,
+                "voicemail": {
+                  "input": 746,
+                  "model": "gpt-4.1-mini",
+                  "output": 11,
+                  "provider": "openai",
+                  "provider_connected": false
+                },
+                "extraction": null,
+                "disposition": {
+                  "input": 0,
+                  "model": null,
+                  "output": 0,
+                  "cached_tokens": 0
+                },
+                "conversation": {
+                  "input": 49576,
+                  "model": "azure/gpt-4.1-mini",
+                  "output": 309,
+                  "provider": "azure",
+                  "routing_target": "ptu",
+                  "provider_connected": false
+                },
+                "summarization": {
+                  "input": 694,
+                  "model": "gpt-4.1-mini",
+                  "output": 151,
+                  "cached_tokens": 0,
+                  "provider_connected": false
+                },
+                "knowledgebases": [
+                  {
+                    "rag_id": "64441a95-6d87-400d-b8a0-a09fb6ebe070",
+                    "source": "Sri_Sai_Clinic_Knowledge_Base_v2.pdf",
+                    "vector_id": "e477bc94-257b-43bd-834d-0d70c7bdde56"
+                  }
+                ]
+              },
+              "synthesizer_provider": "cartesia",
+              "transcriber_duration": 0.8,
+              "transcriber_language": "te",
+              "transcriber_provider": "sarvam",
+              "synthesizer_characters": 998,
+              "synthesizer_usage_breakdown": {
+                "provider_connected": false,
+                "welcome_message_cache": true,
+                "conversation_characters": 998,
+                "welcome_message_characters": 0
+              },
+              "transcriber_usage_breakdown": {
+                "provider_connected": false,
+                "transcriber_duration": 0.8
+              },
+              "voicemail_detection_enabled": true,
+              "endpointing": 100,
+              "incremental_delay": 200,
+              "buffer_size": 240,
+              "hangup_after_silence": 13,
+              "check_if_user_online": true,
+              "trigger_user_online_message_after": 8,
+              "api_tools": [
+                {
+                  "name": "check_availability",
+                  "key": "custom_task",
+                  "parameters": {
+                    "url": "https://scenarios-biggest-playing-die.trycloudflare.com/webhook/check-availability",
+                    "nodes": null,
+                    "param": {
+                      "date": "%(date)s",
+                      "specialty": "%(specialty)s"
+                    },
+                    "scope": null,
+                    "method": "POST",
+                    "headers": {
+                      "Content-Type": "application/json"
+                    },
+                    "api_token": null,
+                    "pre_call_message": null,
+                    "pre_call_webhook_url": null,
+                    "pre_call_webhook_param": null
+                  }
+                },
+                {
+                  "name": "book_appointment",
+                  "key": "custom_task",
+                  "parameters": {
+                    "url": "https://scenarios-biggest-playing-die.trycloudflare.com/webhook/book-appointment",
+                    "nodes": null,
+                    "param": {
+                      "date": "%(date)s",
+                      "time": "%(time)s",
+                      "phone": "%(phone)s",
+                      "specialty": "%(specialty)s",
+                      "caller_name": "%(caller_name)s",
+                      "patient_name": "%(patient_name)s"
+                    },
+                    "scope": null,
+                    "method": "POST",
+                    "headers": {
+                      "Content-Type": "application/json"
+                    },
+                    "api_token": null,
+                    "pre_call_message": null,
+                    "pre_call_webhook_url": null,
+                    "pre_call_webhook_param": null
+                  }
+                }
+              ]
+            },
+            "cost_breakdown": {
+              "llm": 2.066,
+              "network": 1,
+              "platform": 4,
+              "synthesizer": 6.487,
+              "transcriber": 0.007,
+              "llm_breakdown": {
+                "hangup": 0,
+                "routing": 0,
+                "analytics": 0,
+                "voicemail": 0.032,
+                "extraction": 0,
+                "conversation": 2.034,
+                "summarization": 0
+              },
+              "transfer_cost": 0,
+              "total_cost_to_deduct": 3.44,
+              "synthesizer_breakdown": {
+                "conversation": 6.487,
+                "welcome_message": 0
+              },
+              "transcriber_breakdown": {
+                "analytics": 0,
+                "conversation": 0.007
+              }
+            },
+            "extracted_data": {
+              "General": {
+                "Call Summary": {
+                  "subjective": "The conversation was between a patient and Priya from Sri Sai Clinic. The patient requested to book an appointment for fever and cough symptoms lasting three days. Priya informed that no slots were available today with Dr. Ravi Kumar, a general physician, but slots were open the next day from 9:30 to 12:00. The patient chose 9:00 AM for the appointment. Although there was a mention of a blood test, the patient declined it. Priya confirmed the appointment for the next day at 9:30 AM with Dr. Ravi Kumar and advised the patient to bring any previous reports or prescriptions. Confirmation would be sent via WhatsApp, and the call ended with no further requests from the patient."
+                }
+              }
+            },
+            "summary": "The conversation was between a patient and Priya from Sri Sai Clinic. The patient requested to book an appointment for fever and cough symptoms lasting three days. Priya informed that no slots were available today with Dr. Ravi Kumar, a general physician, but slots were open the next day from 9:30 to 12:00. The patient chose 9:00 AM for the appointment. Although there was a mention of a blood test, the patient declined it. Priya confirmed the appointment for the next day at 9:30 AM with Dr. Ravi Kumar and advised the patient to bring any previous reports or prescriptions. Confirmation would be sent via WhatsApp, and the call ended with no further requests from the patient.",
+            "error_message": null,
+            "status": "completed",
+            "agent_extraction": null,
+            "workflow_retries": null,
+            "rescheduled_at": "2026-09-30T09:30:00+05:30",
+            "custom_extractions": null,
+            "campaign_id": null,
+            "smart_status": null,
+            "user_number": "+918074478370",
+            "agent_number": "+918035735856",
+            "initiated_at": "2026-09-29T10:32:07.937533",
+            "retry_config": null,
+            "retry_count": 0,
+            "retry_history": null,
+            "created_at": "2026-09-29T10:32:01.532552+00:00",
+            "updated_at": "2026-09-29T10:34:10.907112+00:00",
+            "processing_status": null,
+            "post_processing_phases": null,
+            "billing_settled": false,
+            "lid_data": null,
+            "telephony_data": {
+              "duration": 107,
+              "to_number": "+918074478370",
+              "from_number": "+918035735856",
+              "recording_url": "https://api.bolna.ai/recordings/call/56d92c46-59c9-4ea1-9bfd-a82176b5614c",
+              "hosted_telephony": true,
+              "provider_call_id": "c9a3c7eb-0673-4579-9c0e-ea18fc8d4b1f",
+              "call_type": "outbound",
+              "provider": "plivo",
+              "hangup_by": "Plivo",
+              "hangup_reason": "end_call_tool",
+              "hangup_provider_code": 4010,
+              "ring_duration": 7,
+              "post_dial_delay": 0,
+              "to_number_carrier": null
+            },
+            "transfer_call_data": null,
+            "context_details": {
+              "recipient_data": {
+                "timezone": "Asia/Kolkata"
+              },
+              "recipient_phone_number": "+918074478370"
+            },
+            "agent_context_details": null,
+            "batch_run_details": null,
+            "provider": "plivo",
+            "latency_data": {
+              "stream_id": 10.66992,
+              "time_to_first_audio": 13.18091,
+              "region": "in",
+              "transcriber": {
+                "time_to_connect": 80,
+                "turns": []
+              },
+              "llm": {
+                "time_to_connect": null,
+                "turns": [
+                  {
+                    "time_to_first_token": null,
+                    "time_to_last_token": null,
+                    "turn": 1
+                  },
+                  {
+                    "time_to_first_token": 428.26009,
+                    "time_to_last_token": 606.5633,
+                    "turn": 2
+                  },
+                  {
+                    "time_to_first_token": null,
+                    "time_to_last_token": null,
+                    "turn": 3
+                  },
+                  {
+                    "time_to_first_token": 704.11994,
+                    "time_to_last_token": 877.00177,
+                    "turn": 4
+                  },
+                  {
+                    "time_to_first_token": 594.25207,
+                    "time_to_last_token": 722.99935,
+                    "turn": 5
+                  },
+                  {
+                    "time_to_first_token": 414.17214,
+                    "time_to_last_token": 642.59665,
+                    "turn": 6
+                  },
+                  {
+                    "time_to_first_token": 585.02974,
+                    "time_to_last_token": 732.93941,
+                    "turn": 7
+                  },
+                  {
+                    "time_to_first_token": 481.29193,
+                    "time_to_last_token": 741.36922,
+                    "turn": 8
+                  },
+                  {
+                    "time_to_first_token": 411.57426,
+                    "time_to_last_token": 584.12407,
+                    "turn": 9
+                  },
+                  {
+                    "time_to_first_token": 431.14711,
+                    "time_to_last_token": 803.98012,
+                    "turn": 10
+                  },
+                  {
+                    "time_to_first_token": null,
+                    "time_to_last_token": null,
+                    "turn": 11
+                  },
+                  {
+                    "time_to_first_token": 426.73842,
+                    "time_to_last_token": 638.35631,
+                    "turn": 12
+                  },
+                  {
+                    "time_to_first_token": null,
+                    "time_to_last_token": null,
+                    "turn": 13
+                  },
+                  {
+                    "time_to_first_token": 518.46363,
+                    "time_to_last_token": 1005.18757,
+                    "turn": 14
+                  },
+                  {
+                    "time_to_first_token": null,
+                    "time_to_last_token": null,
+                    "turn": 15
+                  },
+                  {
+                    "time_to_first_token": 369.24039,
+                    "time_to_last_token": 811.87305,
+                    "turn": 16
+                  }
+                ]
+              },
+              "synthesizer": {
+                "time_to_connect": 25,
+                "turns": [
+                  {
+                    "time_to_first_token": 82,
+                    "time_to_last_token": 680,
+                    "turn": 2
+                  },
+                  {
+                    "time_to_first_token": 96,
+                    "time_to_last_token": 1160,
+                    "turn": 4
+                  },
+                  {
+                    "time_to_first_token": 99,
+                    "time_to_last_token": 491,
+                    "turn": 5
+                  },
+                  {
+                    "time_to_first_token": 81,
+                    "time_to_last_token": 798,
+                    "turn": 6
+                  },
+                  {
+                    "time_to_first_token": 103,
+                    "time_to_last_token": 556,
+                    "turn": 7
+                  },
+                  {
+                    "time_to_first_token": 157,
+                    "time_to_last_token": 1797,
+                    "turn": 8
+                  },
+                  {
+                    "time_to_first_token": null,
+                    "time_to_last_token": null,
+                    "turn": 9
+                  },
+                  {
+                    "time_to_first_token": 129,
+                    "time_to_last_token": 2375,
+                    "turn": 10
+                  },
+                  {
+                    "time_to_first_token": 107,
+                    "time_to_last_token": 1506,
+                    "turn": 12
+                  },
+                  {
+                    "time_to_first_token": 120,
+                    "time_to_last_token": 2907,
+                    "turn": 14
+                  },
+                  {
+                    "time_to_first_token": 104,
+                    "time_to_last_token": 1211,
+                    "turn": 16
+                  }
+                ]
+              },
+              "rag": {
+                "turns": [
+                  {
+                    "query_time": 59.77273,
+                    "turn": 2
+                  },
+                  {
+                    "query_time": 59.68332,
+                    "turn": 4
+                  },
+                  {
+                    "query_time": 67.84415,
+                    "turn": 6
+                  },
+                  {
+                    "query_time": 140.56206,
+                    "turn": 8
+                  },
+                  {
+                    "query_time": 74.10192,
+                    "turn": 9
+                  },
+                  {
+                    "query_time": 166.60142,
+                    "turn": 10
+                  },
+                  {
+                    "query_time": 164.42847,
+                    "turn": 12
+                  },
+                  {
+                    "query_time": 64.50009,
+                    "turn": 14
+                  }
+                ]
+              },
+              "interruption_stats": {
+                "user_speaking_ms": 16,
+                "agent_speaking_ms": 12412,
+                "total_interruptions": 1,
+                "talk_to_listen_ratio": 99.9,
+                "barge_in_recovery_rate": 100,
+                "barge_in_recovery_count": 1,
+                "longest_agent_monologue_ms": 2779,
+                "agent_interrupted_user_count": 0,
+                "user_interrupted_agent_count": 1
+              }
+            },
+            "tool_call_logs": []
+          },
+          "webhookUrl": "http://localhost:5678/webhook/call-ended",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "25f9f7ff-8c40-480a-8d43-f1f23c526c3e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0cf58d9eb06765f22894644d0b145100566c2be2230b80b4f2ae5b2ed64e1410"
+  },
+  "nodeGroups": [],
+  "id": "1BjHofMmv7FBeqXt",
+  "tags": []
+}
