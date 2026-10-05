@@ -1,68 +1,84 @@
-\# Telugu AI Voice Receptionist
+# 📞 Telugu AI Voice Receptionist
 
+> **AI-powered healthcare voice receptionist for natural Telugu + English conversations**
 
+A production-style conversational AI voice agent designed for healthcare appointment booking. It understands natural **Telugu + English code-mixed speech**, identifies the appropriate medical specialty based on symptoms, checks real-time doctor availability, books appointments after caller confirmation, and automatically logs call details.
 
-A production-style conversational AI voice agent for healthcare appointment 
+---
 
-booking, built for natural Telugu + English code-mixed conversation. The agent 
+## 🚀 Key Features
 
-answers calls, matches caller symptoms to the right specialty, checks real-time 
+- 🎙️ **Natural Telugu + English conversations**
+  - Understands code-mixed Telugu and English speech.
+  - Designed for natural conversational interaction rather than literal translation.
 
-doctor availability, books appointments, and logs everything automatically.
+- 🩺 **Symptom-to-specialty matching**
+  - Identifies the caller's symptoms.
+  - Suggests the appropriate medical specialty.
 
+- 📅 **Real-time appointment availability**
+  - Checks actual doctor availability through Google Calendar.
+  - Offers available appointment slots to the caller.
 
+- ✅ **Confirmation-based booking**
+  - Books an appointment only after explicit caller confirmation.
+  - Does not claim a booking was successful unless the booking actually succeeds.
 
-\## Architecture
+- 🚨 **Emergency handling**
+  - Detects potentially serious symptoms.
+  - Provides appropriate emergency guidance.
+  - Does not provide medical diagnosis or medical advice.
 
+- 📊 **Automatic call logging**
+  - Stores call transcripts.
+  - Records call duration and outcome.
+  - Maintains appointment and call information automatically.
 
+- 🖥️ **Live client dashboard**
+  - Clinic staff can view appointments and call information.
+  - Data is automatically updated through Airtable.
 
-Caller → Bolna (voice AI: Sarvam STT/TTS + LLM) → Custom webhook tools → 
+---
 
-n8n (automation backend) → Google Calendar + Airtable → Client dashboard
+## 🏗️ Architecture
 
-
-
-\## What it does
-
-
-
-\- Understands natural Telugu/English mixed speech, not just literal translation
-
-\- Matches symptoms to the correct specialty and proactively offers real available slots
-
-\- Books appointments only after explicit caller confirmation — never fabricates 
-
-&#x20; a successful booking
-
-\- Escalates to emergency guidance for serious symptoms, refuses medical advice
-
-\- Logs every call's transcript, duration, and outcome automatically
-
-\- Surfaces a live, auto-updating dashboard for clinic staff
-
-
-
-\## Stack
-
-
-
-\- \*\*Voice AI platform:\*\* Bolna (Sarvam Bulbul v3 TTS, saaras:v3 STT, Azure GPT-4.1-mini)
-
-\- \*\*Automation backend:\*\* n8n (self-hosted, Docker)
-
-\- \*\*Calendar integration:\*\* Google Calendar API
-
-\- \*\*Data store / dashboard:\*\* Airtable (bookings + call logs, shared live views)
-
-
-
-\## Repo contents
-
-
-
-\- `n8n-workflows/` — exported automation workflows (availability check, booking, call logging)
-
-\- `prompts/canvas-system-prompt.md` — the full conversational behavior prompt
-
-\- `docs/architecture.md` — data flow explanation
-
+```text
+                    ┌─────────────────┐
+                    │     Caller      │
+                    │  Telugu/English │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │      Bolna      │
+                    │    Voice AI     │
+                    │                 │
+                    │ Sarvam STT/TTS  │
+                    │      + LLM      │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │ Custom Webhook  │
+                    │     Tools       │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │       n8n       │
+                    │ Automation      │
+                    │    Backend      │
+                    └───────┬─┬───────┘
+                            │ │
+                ┌───────────┘ └───────────┐
+                ▼                         ▼
+       ┌─────────────────┐       ┌─────────────────┐
+       │ Google Calendar │       │    Airtable     │
+       │   Availability  │       │ Calls + Booking │
+       │   & Booking     │       │      Logs       │
+       └─────────────────┘       └────────┬────────┘
+                                          │
+                                          ▼
+                                 ┌─────────────────┐
+                                 │ Client Dashboard│
+                                 └─────────────────┘
